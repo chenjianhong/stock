@@ -1,0 +1,4 @@
+*.pyc
+.idea
+dist
+jianhong.egg-info
