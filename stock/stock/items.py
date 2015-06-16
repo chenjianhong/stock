@@ -13,3 +13,10 @@ class ListedCompany(scrapy.Item):
     name = scrapy.Field()
     symbol = scrapy.Field()
     code = scrapy.Field()
+
+
+class FundFlow(scrapy.Item):
+    smallest = scrapy.Field()
+    small= scrapy.Field()
+    bigger = scrapy.Field()
+    biggest = scrapy.Field()
