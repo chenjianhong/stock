@@ -15,8 +15,14 @@ LOG_FILE = "logs/scrapy.log"
 SPIDER_MODULES = ['stock.spiders']
 NEWSPIDER_MODULE = 'stock.spiders'
 
-ITEM_PIPELINES = {'stock.pipelines.ListedCompanyPipeline': 1}
+ITEM_PIPELINES = {
+    'stock.pipelines.ListedCompanyPipeline': 1
+}
 
-DOWNLOADER_MIDDLEWARES = {
-    'stock.contrib.downloadmiddleware.phantomjs.JsDownload': 1,
+# DOWNLOADER_MIDDLEWARES = {
+#     'stock.contrib.downloadmiddleware.phantomjs.JsDownload': 1,
+# }
+
+DOWNLOAD_HANDLERS = {
+    'http': 'stock.contrib.downloader.phantomjs.PhantomJSDownloadHandler'
 }
