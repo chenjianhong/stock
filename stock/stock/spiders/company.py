@@ -1,6 +1,7 @@
 #coding:utf-8
 import re
 import json
+import datetime
 from scrapy.spider import Spider
 from scrapy.http import Request
 from stock.items import ListedCompany,Token
@@ -19,7 +20,8 @@ class TokenSpider(Spider):
             token = search_result.groups()[0]
             token_item = Token()
             token_item['type'] = self.name
-            token_item['data'] = {'token':token}
+            token_item['token'] = token
+            token_item['token_date'] = datetime.datetime.now().strftime('%Y%m%d')
             yield token_item
         else:
             log.err('token get error!')

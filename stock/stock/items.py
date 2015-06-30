@@ -24,4 +24,5 @@ class FundFlow(scrapy.Item):
 
 class Token(scrapy.Item):
     type = scrapy.Field()
-    data= scrapy.Field()
+    token = scrapy.Field()
+    token_date = scrapy.Field()

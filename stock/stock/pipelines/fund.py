@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pymongo import MongoClient
+from pymongo import MongoClient, TEXT
 
 
 class FundPipeline(object):
@@ -29,9 +29,11 @@ class TokenPipeline(object):
 
     collection_name = 'token'
 
+
     def open_spider(self,spider):
         self.client = MongoClient(self.MONGODB_SERVER,self.MONGODB_PORT)
         self.db = self.client[self.MONGODB_DB]
+        self.db[self.collection_name].create_index([('token_date',TEXT)],name='index_1',unique=True)
 
     def close_spider(self,spider):
         self.client.close()
@@ -46,7 +48,8 @@ class TokenPipeline(object):
 
     def process_item(self,item,spider):
         if item['type'] == 'token':
-            self.db[self.collection_name].insert(dict({'token':item['data']['token']}))
+
+            self.db[self.collection_name].insert(dict({'token':item['token'],'token_date':item['token_date']}))
             return None
         else:
             return item
