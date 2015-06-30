@@ -17,6 +17,7 @@ NEWSPIDER_MODULE = 'stock.spiders'
 
 ITEM_PIPELINES = {
     # 'stock.pipelines.ListedCompanyPipeline': 1,
+    'stock.pipelines.fund.TokenPipeline': 1,
     'stock.pipelines.fund.FundPipeline': 2
 }
 

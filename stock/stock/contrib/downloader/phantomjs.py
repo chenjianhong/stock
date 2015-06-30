@@ -10,6 +10,11 @@ import Queue
 from twisted.internet import defer, threads
 from twisted.python.failure import Failure
 from scrapy import log
+from stock.http import PhantomJSRequest
+from scrapy.utils.misc import load_object
+
+
+FALLBACK_HANDLER = 'scrapy.core.downloader.handlers.http.HTTPDownloadHandler'
 
 class PhantomJSDownloadHandler(object):
 
@@ -19,12 +24,15 @@ class PhantomJSDownloadHandler(object):
         self.sem = defer.DeferredSemaphore(max_run)
         self.queue = Queue.LifoQueue(max_run)
         self.create_phantomjs_count = 0
-
+        self._fallback_handler = load_object(FALLBACK_HANDLER)(settings)
         SignalManager(dispatcher.Any).connect(self._close, signal=signals.spider_closed)
 
     def download_request(self, request, spider):
         """use semaphore to guard a phantomjs pool"""
-        return self.sem.run(self._wait_request, request, spider)
+        if isinstance(request, PhantomJSRequest):
+            return self.sem.run(self._wait_request, request, spider)
+        else:
+            return self._fallback_handler.download_request(request, spider)
 
     def _wait_request(self, request, spider):
         try:

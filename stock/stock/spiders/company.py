@@ -1,12 +1,29 @@
 #coding:utf-8
+import re
 import json
-from scrapy.selector import HtmlXPathSelector
 from scrapy.spider import Spider
 from scrapy.http import Request
-from stock.items import ListedCompany
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+from stock.items import ListedCompany,Token
+from scrapy import log
+
+
+class TokenSpider(Spider):
+    name = "token"
+    start_urls = (
+            'http://hqres.eastmoney.com/EMQuote_Center2.0/js/list.min.js',
+    )
+
+    def parse(self,response):
+        search_result = re.search('"&token=([0-9a-z]{32})"',response.body_as_unicode())
+        if search_result:
+            token = search_result.groups()[0]
+            token_item = Token()
+            token_item['type'] = self.name
+            token_item['data'] = {'token':token}
+            yield token_item
+        else:
+            log.err('token get error!')
+            yield None
 
 
 class ListedCompanySpider(Spider):

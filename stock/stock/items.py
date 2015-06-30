@@ -20,3 +20,8 @@ class FundFlow(scrapy.Item):
     small= scrapy.Field()
     bigger = scrapy.Field()
     biggest = scrapy.Field()
+
+
+class Token(scrapy.Item):
+    type = scrapy.Field()
+    data= scrapy.Field()
