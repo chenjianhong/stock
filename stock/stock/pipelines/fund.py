@@ -49,7 +49,7 @@ class TokenPipeline(object):
     def process_item(self,item,spider):
         if item['type'] == 'token':
 
-            self.db[self.collection_name].insert(dict({'token':item['token'],'token_date':item['token_date']}))
+            self.db[self.collection_name].update({'token_date':item['token_date']},{'token':item['token'],'token_date':item['token_date']},upsert=True)
             return None
         else:
             return item
