@@ -17,8 +17,8 @@ NEWSPIDER_MODULE = 'stock.spiders'
 
 ITEM_PIPELINES = {
     # 'stock.pipelines.ListedCompanyPipeline': 1,
-    'stock.pipelines.fund.TokenPipeline': 1,
-    'stock.pipelines.fund.FundPipeline': 2
+    # 'stock.pipelines.fund.TokenPipeline': 1,
+    # 'stock.pipelines.fund.FundPipeline': 2
 }
 
 # DOWNLOADER_MIDDLEWARES = {
@@ -26,7 +26,7 @@ ITEM_PIPELINES = {
 # }
 
 DOWNLOAD_HANDLERS = {
-    'http': 'stock.contrib.downloader.phantomjs.PhantomJSDownloadHandler'
+    # 'http': 'stock.contrib.downloader.phantomjs.PhantomJSDownloadHandler'
 }
 
 MONGODB_SERVER = 'localhost'

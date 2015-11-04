@@ -55,6 +55,7 @@ class ListedCompanySpider(Spider):
             listed_company['symbol'] = company_data[0]
             listed_company['code'] = company_data[1]
             listed_company['name'] = company_data[2]
+            print company_data
             yield listed_company
 
 
