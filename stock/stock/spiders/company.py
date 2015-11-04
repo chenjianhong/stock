@@ -82,15 +82,12 @@ class ListedCompanySpider(Spider):
             self.listed_company_count += 1
             print company_data
             listed_company = ListedCompany()
-<<<<<<< HEAD
             listed_company['symbol'] = company_data[0]
             listed_company['code'] = company_data[1]
             listed_company['name'] = company_data[2]
             print company_data
             yield listed_company
-=======
-            yield None
->>>>>>> 46743c6e4cb64ae9680feedf580264b08a028572
+
 
 
 
