@@ -6,7 +6,7 @@ from scrapy.spider import Spider
 from scrapy.http import Request
 from stock.items import ListedCompany,Token
 from scrapy import log
-
+from pymongo import MongoClient
 
 class TokenSpider(Spider):
     name = "token"
@@ -29,34 +29,68 @@ class TokenSpider(Spider):
 
 
 class ListedCompanySpider(Spider):
+
     name = "company"
-    start_urls = (
-            'http://money.finance.sina.com.cn/d/api/openapi_proxy.php/?__s=[["hq","hs_a","",0,1,100]]',
-    )
+
+    base_url = 'http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/index.aspx?type=s&sortType=C&sortRule=-1&pageSize=500&page=%s&style=33&token=%s'
+
+    # start_urls = (
+    #         'http://money.finance.sina.com.cn/d/api/openapi_proxy.php/?__s=[["hq","hs_a","",0,1,100]]',
+    #         'http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/index.aspx?type=s&sortType=C&sortRule=-1&pageSize=20&page=1&style=33&token=44c9d251add88e27b65ed86506f6e5da'
+    # )
 
     def __init__(self, name=None, **kwargs):
         super(ListedCompanySpider, self).__init__( name=None, **kwargs)
         self.listed_company_count = 0
 
+
+    def close_spider(self,spider):
+        self.client.close()
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        cls.MONGODB_SERVER = crawler.settings.get('MONGODB_SERVER')
+        cls.MONGODB_PORT = crawler.settings.getint('MONGODB_PORT')
+        cls.MONGODB_DB = crawler.settings.get('MONGODB_DB')
+        pipe = cls()
+        return pipe
+
+    def start_requests(self):
+        self.client = MongoClient(self.MONGODB_SERVER,self.MONGODB_PORT)
+        self.db = self.client[self.MONGODB_DB]
+        token_date = datetime.datetime.now().strftime('%Y%m%d')
+        self.token =self.db['token'].find_one({'token_date':token_date})
+        first_page = self.base_url%(1,self.token)
+        return [Request(url=first_page, callback=self.parse)]
+
     def parse(self,response):
-        base_url = 'http://money.finance.sina.com.cn/d/api/openapi_proxy.php/?__s=[["hq","hs_a","",0,%s,100]]'
-        json_response = json.loads(response.body_as_unicode())
-        company_count = json_response[0]['count']
-        page_count = company_count/100
-        for page in range(0,page_count+2):
-            next_link = base_url%page
+        data = response.body_as_unicode()[7:]
+        data = data.replace('pages','"pages"')
+        data = data.replace('rank','"rank"')
+        json_response = json.loads(data)
+        page_count = json_response['pages']
+        for page in range(1,page_count+1):
+            next_link = self.base_url%(page,self.token)
             yield Request(url=next_link, callback=self.parse_detail)
 
     def parse_detail(self,response):
-        json_response = json.loads(response.body_as_unicode())
-        for company_data in json_response[0]['items']:
+        data = response.body_as_unicode()[7:]
+        data = data.replace('pages','"pages"')
+        data = data.replace('rank','"rank"')
+        json_response = json.loads(data)
+        for company_data in json_response['rank'][:2]:
             self.listed_company_count += 1
+            print company_data
             listed_company = ListedCompany()
+<<<<<<< HEAD
             listed_company['symbol'] = company_data[0]
             listed_company['code'] = company_data[1]
             listed_company['name'] = company_data[2]
             print company_data
             yield listed_company
+=======
+            yield None
+>>>>>>> 46743c6e4cb64ae9680feedf580264b08a028572
 
 
 
