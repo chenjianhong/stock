@@ -1,8 +1,9 @@
-#coding:utf-8
+# coding:utf-8
 import json
 import re
 from scrapy.spider import Spider
 from scrapy.http import Request
+from stock.models.items import FundFlow
 
 class MainFund(Spider):
     name = "fund"
@@ -27,7 +28,14 @@ class MainFund(Spider):
     def parse_detail(self,response):
         json_response = json.loads(re.sub(r"([,{])(\w+):", "\\1\"\\2\" :", response.body_as_unicode()))
         for fund_data in json_response:
-            yield []
+            fund_flow = FundFlow()
+            fund_flow['open_date'] = fund_data['opendate']
+            fund_flow['trade'] = fund_data['trade']
+            fund_flow['changeratio'] = fund_data['changeratio']
+            fund_flow['turnover'] = fund_data['turnover']
+            fund_flow['ratioamount'] = fund_data['ratioamount']
+            fund_flow['netamount'] = fund_data['netamount']
+            yield fund_flow
 
 
 

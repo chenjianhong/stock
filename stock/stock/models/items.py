@@ -16,10 +16,15 @@ class ListedCompany(scrapy.Item):
 
 
 class FundFlow(scrapy.Item):
-    smallest = scrapy.Field()
-    small= scrapy.Field()
-    bigger = scrapy.Field()
-    biggest = scrapy.Field()
+    open_date = scrapy.Field()
+    trade = scrapy.Field()
+    changeratio = scrapy.Field()
+    turnover = scrapy.Field()
+    ratioamount = scrapy.Field()
+    netamount = scrapy.Field()
+
+    def get_text_output(self):
+        return '\t'.join([self['open_date'],self['trade'],self['changeratio'],self['turnover'],self['ratioamount'],self['netamount']])
 
 
 class Token(scrapy.Item):

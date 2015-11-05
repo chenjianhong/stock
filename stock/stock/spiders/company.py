@@ -2,11 +2,14 @@
 import re
 import json
 import datetime
+
 from scrapy.spider import Spider
 from scrapy.http import Request
-from stock.items import ListedCompany,Token
 from scrapy import log
 from pymongo import MongoClient
+
+from stock.models.items import ListedCompany,Token
+
 
 class TokenSpider(Spider):
     name = "token"

@@ -14,12 +14,13 @@ LOG_FILE = "logs/scrapy.log"
 
 SPIDER_MODULES = ['stock.spiders']
 NEWSPIDER_MODULE = 'stock.spiders'
-
 ITEM_PIPELINES = {
+    'stock.pipelines.fund.FundTextPipeline': 1,
     # 'stock.pipelines.ListedCompanyPipeline': 1,
     # 'stock.pipelines.fund.TokenPipeline': 1,
     # 'stock.pipelines.fund.FundPipeline': 2
 }
+
 
 # DOWNLOADER_MIDDLEWARES = {
 #     'stock.contrib.downloadmiddleware.phantomjs.JsDownload': 1,
@@ -32,3 +33,5 @@ DOWNLOAD_HANDLERS = {
 MONGODB_SERVER = 'localhost'
 MONGODB_PORT = 27017
 MONGODB_DB = 'fund'
+
+STORE_TEXT_DIR = 'data'
